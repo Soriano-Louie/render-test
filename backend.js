@@ -1,5 +1,10 @@
 import cors from "cors";
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -30,8 +35,11 @@ let notes = [
     important: true,
   },
 ];
-app.get("/", (request, response) => {
-  response.send("<h1>Hello World22!</h1>");
+app.use(express.static(path.join(__dirname, "dist")));
+
+// Fallback route: send frontend index.html for all non-API GET routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.get("/api/notes", (request, response) => {
