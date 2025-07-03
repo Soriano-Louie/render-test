@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Note from "./components/Notes";
+import Note from "./components/Button";
 import noteService from "./services/notes";
 
 const App = () => {
@@ -68,6 +68,19 @@ const App = () => {
       });
   };
 
+  const deleteNote = (id) => {
+    noteService
+      .remove(id)
+      .then((deletedNote) => {
+        setNotes(notes.filter((note) => note.id !== id));
+        // console.log("Note deleted ", deletedNote);
+      })
+      .catch((error) => {
+        // console.error("Error deleting note:", error);
+        setTimeout(() => setErrorMessage(null), 5000);
+      });
+  };
+
   const Notification = ({ message }) => {
     if (message === null) {
       return null;
@@ -101,14 +114,18 @@ const App = () => {
           show {showAll ? "important" : "all"}
         </button>
       </div>
+
       <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
+        {notesToShow.map((note) => {
+          return (
+            <Note
+              key={note.id}
+              note={note}
+              toggleImportance={() => toggleImportanceOf(note.id)}
+              removeNote={() => deleteNote(note.id)}
+            />
+          );
+        })}
       </ul>
 
       <form onSubmit={addNote}>

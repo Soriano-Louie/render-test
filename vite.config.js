@@ -3,8 +3,11 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "./",
+  // base: "./",
   plugins: [react()],
+  build: {
+    outDir: "dist", // Ensure build goes to dist folder
+  },
   server: {
     proxy: {
       "/api": {

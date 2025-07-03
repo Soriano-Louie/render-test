@@ -1,8 +1,7 @@
 {
-  "name": "notespart2",
+  "name": "notesWitchBackend",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,7 +12,9 @@
   },
   "dependencies": {
     "axios": "^1.10.0",
+    "dotenv": "^17.0.0",
     "express": "^4.21.2",
+    "mongoose": "^8.16.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
