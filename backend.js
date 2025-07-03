@@ -2,8 +2,25 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const Note = require("./models/note");
+const mongoose = require("mongoose");
 const { error } = require("console");
 const app = express();
+app.use(express.json());
+
+mongoose.set("strictQuery", false);
+
+const url = process.env.MONGODB_URI;
+console.log("connecting to", url);
+
+mongoose
+  .connect(url)
+  .then((result) => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message);
+  });
+
 app.use(express.json());
 
 // 👉 Serve static files from React frontend build
