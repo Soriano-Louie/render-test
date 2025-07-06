@@ -26,7 +26,7 @@ app.use(express.json());
 // 👉 Serve static files from React frontend build
 app.use(express.static(path.join(__dirname, "dist")));
 
-// ✅ API routes
+// API routes
 app.get("/api/notes", (request, response) => {
   Note.find({}).then((notes) => {
     response.json(notes);
@@ -62,7 +62,7 @@ app.delete("/api/notes/:id", async (req, res, next) => {
   // notes = notes.filter((note) => note.id !== req.params.id);
   // res.status(204).end();
 });
-app.post("/api/notes", (request, response) => {
+app.post("/api/notes", (request, response, next) => {
   const body = request.body;
   if (!body.content) {
     return response.status(400).json({ error: "content missing" });
@@ -73,9 +73,12 @@ app.post("/api/notes", (request, response) => {
     important: body.important || false,
   });
 
-  note.save().then((savedNote) => {
-    response.json(savedNote);
-  });
+  note
+    .save()
+    .then((savedNote) => {
+      response.json(savedNote);
+    })
+    .catch((error) => next(error));
 });
 
 app.put("/api/notes/:id", (request, response, next) => {
@@ -105,8 +108,8 @@ app.put("/api/notes/:id", (request, response, next) => {
 // notes = notes.map((note) => (note.id === id ? updatedNote : note));
 // res.json(updatedNote);
 
-// // ✅ Fallback to index.html for React Router
-app.get("*", (req, res) => {
+// Fallback to index.html for React Router
+app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
@@ -115,6 +118,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if ((error.name = "ValidationError")) {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
